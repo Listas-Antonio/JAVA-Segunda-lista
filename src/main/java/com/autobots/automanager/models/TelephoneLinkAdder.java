@@ -12,29 +12,29 @@ import com.autobots.automanager.entity.Client;
 import com.autobots.automanager.entity.Telephone;
 
 @Component
-public class TelephoneLinkAdder implements LinkAdder<Telephone> {
-	
+public class TelephoneLinkAdder implements LinkAdder<Telephone>{
+
 	@Override
-	public void addLink(List<Telephone> telephoneList) {
-		for (Telephone telephone : telephoneList) {
-			long id = telephone.getId();
+	public void addLink(List<Telephone> baseList) {
+		for(Telephone obj : baseList) {
+			long id = obj.getId();
 			Link selfLink = WebMvcLinkBuilder
 					.linkTo(WebMvcLinkBuilder
 							.methodOn(TelephoneController.class)
 							.getTelephone(id))
 					.withSelfRel();
-			telephone.add(selfLink);
+			obj.add(selfLink);
 		}
 	}
 	
 	@Override
-	public void addLink(Telephone obj) {
+	public void addLink(Telephone object) {
 		Link selfLink = WebMvcLinkBuilder
-					.linkTo(WebMvcLinkBuilder
-								.methodOn(TelephoneController.class)
-								.getAllTelephones())
-					.withRel("telephones");
-		obj.add(selfLink);
-	}
-	
+				.linkTo(WebMvcLinkBuilder
+						.methodOn(TelephoneController.class)
+						.getAllTelephones())
+				.withRel("telephones");
+		object.add(selfLink);
+	}	
+
 }

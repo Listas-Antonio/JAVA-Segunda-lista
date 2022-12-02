@@ -8,17 +8,12 @@ import javax.persistence.Id;
 
 import org.springframework.hateoas.RepresentationModel;
 
-import com.autobots.automanager.models.ErrorInfo;
+import lombok.Data;
 
-
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
+@Data
 @Entity
-public class Address extends RepresentationModel<Address> implements ErrorInfo{
-	@Id
+public class Address extends RepresentationModel<Address> {
+	@Id()
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	@Column(nullable = true)
@@ -36,7 +31,5 @@ public class Address extends RepresentationModel<Address> implements ErrorInfo{
 	@Column(unique = false, nullable = true)
 	private String additionalInfo;
 
-	public String getObjectName() {
-		return String.format("%s %2d, %3d, %4d, %5d", state, city, district, street, number);
-	}
+
 }

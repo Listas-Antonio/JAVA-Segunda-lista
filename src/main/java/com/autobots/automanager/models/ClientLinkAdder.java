@@ -10,11 +10,11 @@ import com.autobots.automanager.controller.ClientController;
 import com.autobots.automanager.entity.Client;
 
 @Component
-public class ClientLinkAdder implements LinkAdder<Client> {
-	
+public class ClientLinkAdder implements LinkAdder<Client>{
+
 	@Override
-	public void addLink(List<Client> clientList) {
-		for (Client client : clientList) {
+	public void addLink(List<Client> baseList) {
+		for(Client client : baseList) {
 			long id = client.getId();
 			Link selfLink = WebMvcLinkBuilder
 					.linkTo(WebMvcLinkBuilder
@@ -26,13 +26,13 @@ public class ClientLinkAdder implements LinkAdder<Client> {
 	}
 	
 	@Override
-	public void addLink(Client obj) {
+	public void addLink(Client object) {
 		Link selfLink = WebMvcLinkBuilder
-					.linkTo(WebMvcLinkBuilder
-								.methodOn(ClientController.class)
-								.getAllClients())
-					.withRel("clients");
-		obj.add(selfLink);
-	}
-	
+				.linkTo(WebMvcLinkBuilder
+						.methodOn(ClientController.class)
+						.getAllClients())
+				.withRel("clients");
+		object.add(selfLink);
+	}	
+
 }

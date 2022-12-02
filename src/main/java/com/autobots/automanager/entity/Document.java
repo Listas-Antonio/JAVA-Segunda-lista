@@ -8,16 +8,11 @@ import javax.persistence.Id;
 
 import org.springframework.hateoas.RepresentationModel;
 
-import com.autobots.automanager.models.ErrorInfo;
-
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 @Entity
-public class Document extends RepresentationModel<Document> implements ErrorInfo{
+public class Document extends RepresentationModel<Document>{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -26,7 +21,5 @@ public class Document extends RepresentationModel<Document> implements ErrorInfo
 	@Column(unique = true)
 	private String number;
 	
-	public String getObjectName() {
-		return getDocumentType();
-	}
+
 }

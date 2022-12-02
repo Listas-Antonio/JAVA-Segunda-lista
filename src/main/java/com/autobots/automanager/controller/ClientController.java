@@ -14,10 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.autobots.automanager.entity.Address;
 import com.autobots.automanager.entity.Client;
 import com.autobots.automanager.models.ClientLinkAdder;
-import com.autobots.automanager.models.ErrorTreatment;
 import com.autobots.automanager.services.ClientService;
 
 
@@ -40,6 +38,7 @@ public class ClientController {
 			return response;
 		} else {
 			linkAdder.addLink(allClients);
+			
 			ResponseEntity<List<Client>> response = new ResponseEntity<>(allClients, HttpStatus.ACCEPTED);
 			return response;
 		}
@@ -53,26 +52,19 @@ public class ClientController {
 			return response;
 		} else {
 			linkAdder.addLink(client);
-			ResponseEntity<Client> response = new ResponseEntity<Client>(client, HttpStatus.FOUND);
+			ResponseEntity<Client> response = new ResponseEntity<>(client, HttpStatus.FOUND);
 			return response;
 		}
-
 	}
 	
 	@PostMapping("/register")
-    public ResponseEntity<?> insertNewClient(@RequestBody Client obj){
-        ErrorTreatment<Client> errorTreatment = new ErrorTreatment<>();
+	public ResponseEntity<?> insertNewClient(@RequestBody Client obj){
+
+
 		HttpStatus status;
 		String responseString;
         
-        errorTreatment.checkCopyItemToList(service.findAll(), obj);
-        
-        if(errorTreatment.getHasCopyError()) {
-        	
-        	responseString = "Object has a copy. Object:" + errorTreatment.getHasCopyError();
-            status = HttpStatus.CONFLICT;
-            
-        }else if(errorTreatment.getIsNullError()){
+		if(obj.getId() == null){
         	
             status = HttpStatus.NOT_FOUND;
             responseString = "Body cannot be null";    
@@ -85,19 +77,16 @@ public class ClientController {
         	service.insert(obj);
         }
         return new ResponseEntity<>(responseString, status);
-    }
+	}
 
 	@PutMapping("/update")
 	public ResponseEntity<?> updateClient(@RequestBody Client obj){
 		HttpStatus status;
 		String responseString;
 		
-		ErrorTreatment<Client> errorTreatment = new ErrorTreatment<>();
-		errorTreatment.isObjectNull(obj);
-		
-		if(errorTreatment.getIsNullError()) {
+		if(obj.getId() == null) {
 			
-			responseString = errorTreatment.getErrorLog();
+			responseString = "Body cannot be null";
 			status = HttpStatus.NOT_FOUND;
 			
 		}else {
@@ -116,11 +105,9 @@ public class ClientController {
 		HttpStatus status;
 		String responseString;
 		
-		ErrorTreatment<Client> errorTreatment = new ErrorTreatment<>();
-		
 		Client client = service.findById(id);
 		
-		if(errorTreatment.isObjectNull(client)) {
+		if(client.getId() == null) {
 			status = HttpStatus.NOT_FOUND;
 			responseString = "Object not found";
 		}else {

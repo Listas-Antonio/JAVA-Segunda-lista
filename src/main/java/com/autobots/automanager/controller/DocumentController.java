@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.autobots.automanager.entity.Document;
 import com.autobots.automanager.models.DocumentLinkAdder;
-import com.autobots.automanager.models.ErrorTreatment;
 import com.autobots.automanager.services.DocumentService;
 
 
@@ -62,19 +61,12 @@ public class DocumentController {
 	
 	@PostMapping("/register")
 	public ResponseEntity<?> insertNewDocument(@RequestBody Document obj){
-        ErrorTreatment<Document> errorTreatment = new ErrorTreatment<>();
+		
 		HttpStatus status;
 		String responseString;
-        
-        errorTreatment.checkCopyItemToList(service.findAll(), obj);
-        
-        if(errorTreatment.getHasCopyError()) {
-        	
-        	responseString = "Object has a copy. Object:" + errorTreatment.getHasCopyError();
-            status = HttpStatus.CONFLICT;
-            
-        }else if(errorTreatment.getIsNullError()){
-        	
+		
+		if(obj.getId() == null) {
+			
             status = HttpStatus.NOT_FOUND;
             responseString = "Body cannot be null";    
             
@@ -90,15 +82,13 @@ public class DocumentController {
 
 	@PutMapping("/update")
 	public ResponseEntity<?> updateDocument(@RequestBody Document obj){
+		
 		HttpStatus status;
 		String responseString;
 		
-		ErrorTreatment<Document> errorTreatment = new ErrorTreatment<>();
-		errorTreatment.isObjectNull(obj);
-		
-		if(errorTreatment.getIsNullError()) {
+		if(obj.getId() == null) {
 			
-			responseString = errorTreatment.getErrorLog();
+			responseString = "Object cannot be null";
 			status = HttpStatus.NOT_FOUND;
 			
 		}else {
@@ -114,14 +104,13 @@ public class DocumentController {
 	
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<?> deleteDocument(@PathVariable Long id){
+
 		HttpStatus status;
 		String responseString;
 		
-		ErrorTreatment<Document> errorTreatment = new ErrorTreatment<>();
+		Document obj = service.findById(id);
 		
-		Document document = service.findById(id);
-		
-		if(errorTreatment.isObjectNull(document)) {
+		if(obj.getId() == null) {
 			status = HttpStatus.NOT_FOUND;
 			responseString = "Object not found";
 		}else {

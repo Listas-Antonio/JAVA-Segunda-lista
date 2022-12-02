@@ -8,13 +8,11 @@ import javax.persistence.Id;
 
 import org.springframework.hateoas.RepresentationModel;
 
-import com.autobots.automanager.models.ErrorInfo;
-
 import lombok.Data;
 
 @Data
 @Entity
-public class Telephone extends RepresentationModel<Telephone> implements ErrorInfo{
+public class Telephone extends RepresentationModel<Telephone>{
 	@Id()
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -23,8 +21,4 @@ public class Telephone extends RepresentationModel<Telephone> implements ErrorIn
 	@Column
 	private String number;
 
-	public String getObjectName() {
-		return String.format("(%s) %2d", ddd, number);
-	}
-	
 }

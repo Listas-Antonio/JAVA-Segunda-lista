@@ -15,9 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.autobots.automanager.entity.Address;
+import com.autobots.automanager.entity.Client;
 import com.autobots.automanager.models.AddressLinkAdder;
-import com.autobots.automanager.models.ErrorTreatment;
 import com.autobots.automanager.services.AddressService;
+import com.autobots.automanager.services.ClientService;
 
 
 
@@ -27,6 +28,7 @@ public class AddressController {
 	
 	@Autowired
 	private AddressService service;
+	
 	
 	@Autowired
 	private AddressLinkAdder linkAdder;
@@ -44,34 +46,27 @@ public class AddressController {
 		}
 	}
 	
-	@GetMapping("/document/{id}")
+	@GetMapping("/address/{id}")
 	public ResponseEntity<Address> getAddress(@PathVariable Long id){
 		Address address = service.findById(id);
 		
-		if(address == null) {
+		if(address.getId() == null) {
 			ResponseEntity<Address> response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
 			return response;
 		} else {
 			linkAdder.addLink(address);
-			ResponseEntity<Address> response = new ResponseEntity<>(address, HttpStatus.FOUND);
+			ResponseEntity<Address> response = new ResponseEntity<>(address, HttpStatus.ACCEPTED);
 			return response;
 		}
 	}
 	@PostMapping("/register")
 	public ResponseEntity<?> insertNewAddress(@RequestBody Address obj){
-        ErrorTreatment<Address> errorTreatment = new ErrorTreatment<>();
+
+
 		HttpStatus status;
 		String responseString;
-		
-        errorTreatment.checkCopyItemToList(service.findAll(), obj);
-        
 
-        if(errorTreatment.getHasCopyError()) {
-        	
-        	responseString = "Object has a copy. Object:" + errorTreatment.getHasCopyError();
-            status = HttpStatus.CONFLICT;
-            
-        }else if(errorTreatment.getIsNullError()){
+        if(obj.getId() == null) {
         	
             status = HttpStatus.NOT_FOUND;
             responseString = "Body cannot be null";    
@@ -88,16 +83,14 @@ public class AddressController {
 
 	@PutMapping("/update")
 	public ResponseEntity<?> updateAddress(@RequestBody Address obj){
+
 		HttpStatus status;
 		String responseString;
-		
-		ErrorTreatment<Address> errorTreatment = new ErrorTreatment<>();
-		errorTreatment.isObjectNull(obj);
-		
-		if(errorTreatment.getIsNullError()) {
-			
-			responseString = errorTreatment.getErrorLog();
-			status = HttpStatus.NOT_FOUND;
+
+        if(obj.getId() == null) {
+        	
+        	responseString = "Body cannot be null";    
+            status = HttpStatus.NOT_FOUND;
 			
 		}else {
 			
@@ -112,14 +105,14 @@ public class AddressController {
 	
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<?> deleteAddress(@PathVariable Long id){
+
 		HttpStatus status;
 		String responseString;
+
+		Address obj = service.findById(id);
 		
-		ErrorTreatment<Address> errorTreatment = new ErrorTreatment<>();
-		
-		Address address = service.findById(id);
-		
-		if(errorTreatment.isObjectNull(address)) {
+        if(obj.getId() == null) {
+
 			status = HttpStatus.NOT_FOUND;
 			responseString = "Object not found";
 		}else {

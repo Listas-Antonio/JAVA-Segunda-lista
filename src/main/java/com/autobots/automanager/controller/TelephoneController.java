@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.autobots.automanager.entity.Telephone;
-import com.autobots.automanager.models.ErrorTreatment;
 import com.autobots.automanager.models.TelephoneLinkAdder;
 import com.autobots.automanager.services.TelephoneService;
 
@@ -30,10 +29,11 @@ public class TelephoneController {
 	@Autowired
 	private TelephoneService service;
 	
+
 	@Autowired
 	private TelephoneLinkAdder linkAdder;
 	
-	@GetMapping("/clients")
+	@GetMapping("/telephones")
 	public ResponseEntity<List<Telephone>> getAllTelephones(){
 		List<Telephone> allTelephones = service.findAll();
 		if(allTelephones.isEmpty()) {
@@ -46,7 +46,7 @@ public class TelephoneController {
 		}
 	}
 	
-	@GetMapping("/client/{id}")
+	@GetMapping("/telephone/{id}")
 	public ResponseEntity<Telephone> getTelephone(@PathVariable Long id){
 		List<Telephone> allTelephones = service.findAll();
 		Telephone telephone = service.findById(id);
@@ -63,19 +63,11 @@ public class TelephoneController {
 	
 	@PostMapping("/register")
 	public ResponseEntity<?> insertNewTelephone(@RequestBody Telephone obj){
-        ErrorTreatment<Telephone> errorTreatment = new ErrorTreatment<>();
-        
+
 		HttpStatus status;
 		String responseString;
         
-        errorTreatment.checkCopyItemToList(service.findAll(), obj);
-        
-        if(errorTreatment.getHasCopyError()) {
-        	
-        	responseString = "Object has a copy. Object:" + errorTreatment.getHasCopyError();
-            status = HttpStatus.CONFLICT;
-            
-        }else if(errorTreatment.getIsNullError()){
+        if(obj.getId() == null){
         	
             status = HttpStatus.NOT_FOUND;
             responseString = "Body cannot be null";    
@@ -95,12 +87,9 @@ public class TelephoneController {
 		HttpStatus status;
 		String responseString;
 		
-		ErrorTreatment<Telephone> errorTreatment = new ErrorTreatment<>();
-		errorTreatment.isObjectNull(obj);
-		
-		if(errorTreatment.getIsNullError()) {
+		if(obj.getId() == null) {
 			
-			responseString = errorTreatment.getErrorLog();
+			responseString = "Body cannot be null";
 			status = HttpStatus.NOT_FOUND;
 			
 		}else {
@@ -119,11 +108,9 @@ public class TelephoneController {
 		HttpStatus status;
 		String responseString;
 		
-		ErrorTreatment<Telephone> errorTreatment = new ErrorTreatment<>();
-		
 		Telephone telephone = service.findById(id);
 		
-		if(errorTreatment.isObjectNull(telephone)) {
+		if(telephone.getId() == null) {
 			status = HttpStatus.NOT_FOUND;
 			responseString = "Object not found";
 		}else {

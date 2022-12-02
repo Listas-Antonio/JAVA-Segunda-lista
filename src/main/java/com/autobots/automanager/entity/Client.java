@@ -15,15 +15,11 @@ import javax.persistence.OneToOne;
 
 import org.springframework.hateoas.RepresentationModel;
 
-import com.autobots.automanager.models.ErrorInfo;
+import lombok.Data;
 
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
+@Data
 @Entity
-public class Client extends RepresentationModel<Client> implements ErrorInfo{
+public class Client extends RepresentationModel<Client>{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -43,7 +39,6 @@ public class Client extends RepresentationModel<Client> implements ErrorInfo{
 	private List<Telephone> telephone = new ArrayList<>();
 
 
-	public String getObjectName() {
-		return getName();
-	}
+
+	
 }
